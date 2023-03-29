@@ -1,27 +1,8 @@
 # bigdata_processing_assignment1-201802454import os
-import pandas as pd
-import math
-from bs4 import BeautifulSoup
-from selenium import webdriver
-import urllib.request
-import requests
-import time
-import re
 #basic_url ="https://www.kyochon.com/shop/domestic.asp"이며, 교촌 매장은 서울부터 제주까지 총 17개
-si_dict = {
-    "서울":1, "부산":2, "대구":3, "인천":4,
-    "광주":5, "대전":6, "울산":7, "세종":8,
-    "경기":9, "강원": 10, "충북":11, "충남":12, "전북":13,
-    "전남": 14, "경북":15, "경남":16,"제주":17
-}
+si_dict = {"서울":1, "부산":2, "대구":3, "인천":4,"광주":5, "대전":6, "울산":7, "세종":8,"경기":9, "강원": 10, "충북":11, "충남":12, "전북":13,"전남": 14, "경북":15, "경남":16,"제주":17}
 #각 시마다, 도/군 이 몇개있는지를 매칭하는 딕셔너리 서울 -> 1 -> 25의 형태로 타고가도록 해둠
-do_gun_dict = {
-    "1":25, "2":16, "3":8, "4":10, "5":5,
-    "6":5, "7":5, "8":16, "9":44, "10":18,
-    "11":15, "12":17, "13":15, "14":22,
-    "15":24, "16":22, "17":2
-}
-
+do_gun_dict = {"1":25, "2":16, "3":8, "4":10, "5":5,"6":5, "7":5, "8":16, "9":44, "10":18,"11":15, "12":17, "13":15, "14":22,"15":24, "16":22, "17":2}
 def kyochon(url):
     res = requests.get(url)#request라이브러리
     res.raise_for_status()#교촌 서버에 오류가 존재하는지 확인하는 코드
@@ -78,17 +59,9 @@ def kyochon(url):
         except AttributeError:#ex) 세종시 무슨 구에 매장이 한개도 없는 경우 크롤링 자체가 불가능하기에, try except으로 예외처리
             continue
         print("크롤링 성공")
-
     return name, si, do, address, phonenum
 print("교촌 크롤링>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
 basic_url ="https://www.kyochon.com/shop/domestic.asp"
-
-name = []
-si = []
-do = []
-address = []
-phone = []
-
 for i in si_dict.items():
     si_value = i[1]
     si_name = i[0]
@@ -104,17 +77,6 @@ for i in si_dict.items():
         phone = phone + p
         time.sleep(1)#서버 과부하시 오류코드 500이 뜨는것을 막기위해 강제로 time.sleep(1)을 진행
 
-dict_data = {
-    'name': name,
-    'si':si,
-    'do':do,
-    'address':address,
-    'phone':phone
-}#원할한 데이터 프레임으로의 변환을 위해, 각 정보들을 dictionary로 저장
-print(len(name))
-print(len(si))
-print(len(do))
-print(len(address))
-print(len(phone))
+dict_data = {'name': name, 'si':si,'do':do,'address':address,'phone':phone}#원할한 데이터 프레임으로의 변환을 위해, 각 정보들을 dictionary로 저장
 df_data = pd.DataFrame(dict_data)#dictionary를 데이터프레임으로 변환
 df_data.to_csv('C:/Users/이광호/Desktop/programming/itshirt-cat/websraping_basic/kyochon_information.csv',encoding = 'cp949',mode = 'w', index = 'True')#데이터프레임을 csv로 변환
